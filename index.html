@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triopus Monitoring System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <h1>Triopus</h1>
+            <nav>
+                <a href="#home" class="active">Home</a>
+                <a href="#history">History</a>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <section class="temperature-section">
+            <!-- Suhu Section 1 -->
+            <div class="temp-indicator" id="section1">
+                <div class="circle">
+                    <!-- Persentase akan diupdate oleh JavaScript -->
+                </div>
+                <p>Section 1</p>
+            </div>
+            <!-- Suhu Section 2 -->
+            <div class="temp-indicator" id="section2">
+                <div class="circle">
+                </div>
+                <p>Section 2</p>
+            </div>
+            <!-- Suhu Section 3 -->
+            <div class="temp-indicator" id="section3">
+                <div class="circle">
+                </div>
+                <p>Section 3</p>
+            </div>
+        </section>
+        <section class="stirrer-section">
+            <label class="switch">
+                <input type="checkbox" id="stirrer-toggle">
+                <span class="slider round"></span>
+            </label>
+            <label for="stirrer-toggle">Pengaduk</label>
+        </section>
+        <section class="tank-section">
+            <div class="tank" id="oilTank">
+                <!-- Warna akan diupdate oleh JavaScript -->
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Triopus</p>
+    </footer>
+    <script src="scripts.js"></script>
+</body>
+</html>
