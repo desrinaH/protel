@@ -28,10 +28,19 @@ app.get('/readings/:node_id', (req, res) => {
 });
 
 // Update sensors
+// app.post('/readings', (req, res) => {
+//     const { node_id, suhu1, suhu2, suhu3, suhu4, suhu5, suhu6 } = req.body;
+//     const query = 'INSERT INTO sensorsread (node_id, suhu1, suhu2, suhu3, suhu4, suhu5, suhu6) VALUES (?, ?, ?, ?, ?, ?, ?)';
+//     db.query(query, [node_id, suhu1, suhu2, suhu3, suhu4, suhu5, suhu6], (error, results) => {
+//         if (error) throw error;
+//         res.json({ message: 'Sensor updated successfully.' });
+//     });
+// });
+
 app.post('/readings', (req, res) => {
-    const { node_id, suhu1, suhu2, suhu3, suhu4, suhu5, suhu6 } = req.body;
-    const query = 'INSERT INTO sensorsread (node_id, suhu1, suhu2, suhu3, suhu4, suhu5, suhu6) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    db.query(query, [node_id, suhu1, suhu2, suhu3, suhu4, suhu5, suhu6], (error, results) => {
+    const { node_id, suhu1 } = req.body;
+    const query = 'INSERT INTO sensorsread (node_id, suhu1) VALUES (?, ?)';
+    db.query(query, [node_id, suhu1], (error, results) => {
         if (error) throw error;
         res.json({ message: 'Sensor updated successfully.' });
     });
@@ -49,5 +58,5 @@ app.post('/actions', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server started on http://localhost:${port}`);
+    console.log(`Server started on http://localhost:${port}`); 
 });
