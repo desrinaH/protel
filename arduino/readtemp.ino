@@ -58,25 +58,28 @@ void readSensorData() {
   static int sensorIndex = 1;
   switch (sensorIndex) {
     case 1:
-      Serial.print("Sensor 1: "); Serial.println(thermocouple1.readCelsius());
+      Serial.print("Sensor 1: "); Serial.println(thermocouple1.readCelsius()); //temp1 = thermocouple1.readCelsius()
       break;
     case 2:
-      Serial.print("Sensor 2: "); Serial.println(thermocouple2.readCelsius());
+      Serial.print("Sensor 2: "); Serial.println(thermocouple2.readCelsius()); //temp2 = thermocouple2.readCelsius()
       break;
     case 3:
-      Serial.print("Sensor 3: "); Serial.println(thermocouple3.readCelsius());
+      Serial.print("Sensor 3: "); Serial.println(thermocouple3.readCelsius()); //temp3 = thermocouple3.readCelsius()
       break;
     case 4:
-      Serial.print("Sensor 4: "); Serial.println(thermocouple4.readCelsius());
+      Serial.print("Sensor 4: "); Serial.println(thermocouple4.readCelsius());//temp4 = thermocouple4.readCelsius()
       break;
     case 5:
-      Serial.print("Sensor 5: "); Serial.println(thermocouple5.readCelsius());
+      Serial.print("Sensor 5: "); Serial.println(thermocouple5.readCelsius()); //temp5 = thermocouple5.readCelsius()
       break;
     case 6:
-      Serial.print("Sensor 6: "); Serial.println(thermocouple6.readCelsius());
+      Serial.print("Sensor 6: "); Serial.println(thermocouple6.readCelsius());//temp6 = thermocouple6.readCelsius()
       sensorIndex = 0; // Reset untuk memulai lagi dari sensor 1
       break;
   }
+  //avg_node1 = (temp1+temp2+temp3) / 3; serial.println(avg_node1);
+  //avg_node2 = (temp4+temp5+temp6) / 3; serial.println(avg_node2);
+
   sensorIndex++;
 }
 

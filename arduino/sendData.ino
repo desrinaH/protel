@@ -14,7 +14,7 @@ void connectToWiFi() {
     Serial.println("Connected to WiFi");
 }
 
-void sendToServer(float suhu) {
+void sendToServer(float suhu) { //suhu[]
     if(WiFi.status() == WL_CONNECTED) {
         HTTPClient http;
         http.begin(serverUrl);
@@ -29,6 +29,13 @@ void sendToServer(float suhu) {
         payload += "\"suhu5\":" + String(suhu, 2);
         payload += "\"suhu6\":" + String(suhu, 2);
         payload += "}";
+
+        // String payload = "{";
+        // for (int i = 0; i < 6; i++) {
+        //     payload += "\"suhu" + String(i+1) + "\":" + String(suhus[i], 2);
+        //     if (i < 5) payload += ",";
+        // }
+        // payload += "}";
 
         int httpResponseCode = http.POST(payload);
         
@@ -63,3 +70,23 @@ void loop() {
         //sendToServer(suhu); // Kirim data ke server
     }
 }
+
+// void loop() {
+//     if (Serial.available()) {
+//         // Baca data dari Arduino
+//         String suhuData = Serial.readStringUntil('\n'); // Baca data sampai newline
+//         float suhus[6];
+//         int i = 0;
+//         // Pisahkan data berdasarkan koma dan konversi ke float
+//         int pos = 0;
+//         while (pos != -1) {
+//             int nextPos = suhuData.indexOf(',', pos);
+//             suhus[i++] = suhuData.substring(pos, nextPos).toFloat();
+//             pos = (nextPos >= 0) ? nextPos + 1 : -1;
+//         }
+
+//         // Sekarang Anda memiliki semua data suhu dalam array `suhus`
+//         // Anda bisa mengirimnya satu per satu atau dalam format JSON
+//         sendToServer(suhus);
+//     }
+// }
