@@ -1,19 +1,22 @@
-#include <WiFi.h>
-#include <HTTPClient.h>
 #include "max6675.h"
 
-#define CLK_PIN 18  // SCK pin
-#define SO_PIN 19   // SO (MISO) pin
-#define LED_PIN 2   // Pin LED dihubungkan ke pin 2
+// Pin untuk komunikasi SPI dengan MAX6675
+#define CLK_PIN 13
+#define SO_PIN 12
 
 // Pin CS untuk setiap sensor
-#define CS_PIN1 4
-#define CS_PIN2 5
-#define CS_PIN3 21
-#define CS_PIN4 22
-#define CS_PIN5 23
-#define CS_PIN6 25
+#define CS_PIN1 2
+#define CS_PIN2 3
+#define CS_PIN3 4
+#define CS_PIN4 7
+#define CS_PIN5 6
+#define CS_PIN6 5
 
+// Pin untuk relay
+#define RELAY1_PIN 10  // Relay 1 di pin 10
+#define RELAY2_PIN 11  // Relay 2 di pin 11
+
+// Membuat objek thermocouple
 MAX6675 thermocouple1(CLK_PIN, CS_PIN1, SO_PIN);
 MAX6675 thermocouple2(CLK_PIN, CS_PIN2, SO_PIN);
 MAX6675 thermocouple3(CLK_PIN, CS_PIN3, SO_PIN);
@@ -21,79 +24,77 @@ MAX6675 thermocouple4(CLK_PIN, CS_PIN4, SO_PIN);
 MAX6675 thermocouple5(CLK_PIN, CS_PIN5, SO_PIN);
 MAX6675 thermocouple6(CLK_PIN, CS_PIN6, SO_PIN);
 
-unsigned long previousMillis = 0;
-const long interval = 2000; // Interval waktu untuk membaca suhu (2 detik)
-
-const char* ssid = "yourssid";
-const char* password = "yourpassword";
-const char* serverUrl = "http://192.168.38.150:3000/readings";
-
-void connectToWiFi() {
-    WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(1000);
-        Serial.println("Connecting to WiFi...");
-    }
-    Serial.println("Connected to WiFi");
-}
-
-void sendToServer() {
-    if(WiFi.status() == WL_CONNECTED) {
-        HTTPClient http;
-        http.begin(serverUrl);
-        http.addHeader("Content-Type", "application/json");
-
-        String payload = "{";
-        payload += "\"node_id\":1,"; // Setting value 1 for node_id column
-        payload += "\"suhu1\":" + String(thermocouple1.readCelsius()) + ",";
-        payload += "\"suhu2\":" + String(thermocouple1.readCelsius()) + ",";
-        payload += "\"suhu3\":" + String(thermocouple1.readCelsius()) + ",";
-        payload += "\"suhu4\":" + String(thermocouple1.readCelsius()) + ",";
-        payload += "\"suhu5\":" + String(thermocouple1.readCelsius()) + ",";
-        payload += "\"suhu6\":" + String(thermocouple1.readCelsius());
-        payload += "}";
-
-        int httpResponseCode = http.POST(payload);
-        
-        if (httpResponseCode > 0) {
-            Serial.print("HTTP Response code: ");
-            Serial.println(httpResponseCode);
-        } else {
-            Serial.print("Error code: ");
-            Serial.println(httpResponseCode);
-        }
-
-        http.end();
-    } else {
-        Serial.println("WiFi not connected!");
-    }
-}
-
+// Variabel untuk mengontrol relay dan pembacaan suhu
+unsigned long lastToggleTime1 = 0;
+unsigned long lastToggleTime2 = 0;
+unsigned long lastSensorReadTime = 0;
+const long relayOnInterval = 3000;  // 3 detik relay menyala
+const long relayOffInterval = 3000; // 3 detik relay mati
+const long sensorReadInterval = 1000; // 1 detik untuk pembacaan sensor
+bool relay1State = LOW;
+bool relay2State = LOW;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(LED_PIN, OUTPUT);
-  Serial.println("MAX6675 multiple sensors test");
-  delay(500); // Wait for MAX6675 to stabilize
-  
-  connectToWiFi();
+  pinMode(RELAY1_PIN, OUTPUT);
+  pinMode(RELAY2_PIN, OUTPUT);
 }
 
 void loop() {
-  // Test readings from each sensor
-  Serial.print("Sensor 1 - C: "); 
-  Serial.println(thermocouple1.readCelsius());
-  Serial.print("Sensor 2 - C: "); 
-  Serial.println(thermocouple2.readCelsius());
-  // ... [repeat for other sensors] ...
+  unsigned long currentMillis = millis();
 
-  sendToServer();  // Send data to the server
-
-  // LED blink logic
-  if (millis() - previousMillis >= interval) {
-    previousMillis = millis();
-    digitalWrite(LED_PIN, !digitalRead(LED_PIN)); // Toggle LED state
+  // Pembacaan suhu dari setiap sensor dengan jeda 1 detik
+  if (currentMillis - lastSensorReadTime >= sensorReadInterval) {
+    readSensorData();
+    lastSensorReadTime = currentMillis;
   }
 
-  delay(1000);
+  // Mengontrol relay secara independen
+  controlRelay(RELAY1_PIN, lastToggleTime1, relay1State, thermocouple1.readCelsius(), thermocouple2.readCelsius(), thermocouple3.readCelsius());
+  controlRelay(RELAY2_PIN, lastToggleTime2, relay2State, thermocouple4.readCelsius(), thermocouple5.readCelsius(), thermocouple6.readCelsius());
+}
+
+void readSensorData() {
+  static int sensorIndex = 1;
+  switch (sensorIndex) {
+    case 1:
+      Serial.print("Sensor 1: "); Serial.println(thermocouple1.readCelsius());
+      break;
+    case 2:
+      Serial.print("Sensor 2: "); Serial.println(thermocouple2.readCelsius());
+      break;
+    case 3:
+      Serial.print("Sensor 3: "); Serial.println(thermocouple3.readCelsius());
+      break;
+    case 4:
+      Serial.print("Sensor 4: "); Serial.println(thermocouple4.readCelsius());
+      break;
+    case 5:
+      Serial.print("Sensor 5: "); Serial.println(thermocouple5.readCelsius());
+      break;
+    case 6:
+      Serial.print("Sensor 6: "); Serial.println(thermocouple6.readCelsius());
+      sensorIndex = 0; // Reset untuk memulai lagi dari sensor 1
+      break;
+  }
+  sensorIndex++;
+}
+
+void controlRelay(int relayPin, unsigned long &lastToggleTime, bool &relayState, float temp1, float temp2, float temp3) {
+  unsigned long currentMillis = millis();
+
+  bool isTemperatureLow = (temp1 < 30 || temp2 < 30 || temp3 < 30); //kalibrasi ama cairan disini
+  bool isTemperatureHigh = (temp1 > 60 || temp2 > 60 || temp3 > 60); //kalibrasi ama cairan disini
+
+  if (isTemperatureLow) {
+    if ((relayState == LOW && currentMillis - lastToggleTime >= relayOffInterval) ||
+        (relayState == HIGH && currentMillis - lastToggleTime >= relayOnInterval)) {
+      relayState = !relayState;
+      digitalWrite(relayPin, relayState);
+      lastToggleTime = currentMillis;
+      Serial.print("Relay "); Serial.print(relayPin); Serial.println(relayState ? " ON" : " OFF");
+    }
+  } else if (isTemperatureHigh) {
+    digitalWrite(relayPin, LOW);
+  }
 }
