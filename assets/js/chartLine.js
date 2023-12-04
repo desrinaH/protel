@@ -40,7 +40,7 @@ Highcharts.chart("container", {
     {
       name: "Suhu",
       data: [
-        35, 42, 61, 57, 52, 60,
+        35, 42, 61, 57, 52, 60, //insert suhu data disini
       ],
     },
   ],
