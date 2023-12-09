@@ -62,7 +62,7 @@
             <ul class="space-y-2 mx-8 font-medium">
                 <li>
                     <a href="/index.html"
-                        class="flex items-center py-2 px-4 text-gray-900 rounded-lg dark:text-white bg-[#FF731D] hover:bg-[#FF731D] dark:hover:bg-gray-700 group">
+                        class="flex items-center py-2 vpx-4 text-gray-900 rounded-lg dark:text-white bg-[#FF731D] hover:bg-[#FF731D] dark:hover:bg-gray-700 group">
                         <svg width="21" height="24" viewBox="0 0 21 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M9.058 23.2651H0V0.734863H9.058V23.2651ZM11.3225 23.2651H20.3805V12H11.3225V23.2651ZM20.3805 9.49664V0.734863H11.3225V9.49664H20.3805Z"
@@ -113,14 +113,15 @@
             <div class="w-[55px] sm:w-[112px] bg-[#FF731D] h-1 sm:h-2 rounded-[21px]"></div>
         </div>
 
+        <!--progress pemanas-->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-3 mx-auto mt-10 sm:mt-0">
             <div class="box">
-                <div class="proggress" style="--i:84; --clr:#F11C1C;">
+                <div class="proggress" data-node-id="node1" style="--i:84; --clr:#F11C1C;">
                     <h4>Node 1</h4>
                     <h3>84 <span>°C</span></h3>
                 </div>
-
-                <div class="proggress less" style="--i:34; --clr:#1C71F1D9;">
+                
+                <div class="proggress less" data-node-id="node2" style="--i:34; --clr:#1C71F1D9;">
                     <h4>Node 2</h4>
                     <h3>34 <span>°C</span></h3>
                 </div>
@@ -208,6 +209,7 @@
     <!-- script js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
     <script src="./assets/js/tabungMinyak.js"></script>
+    <script src="./assets/js/tempDisplay.js"></script>
 
 </body>
 
