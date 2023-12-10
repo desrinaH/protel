@@ -3,9 +3,9 @@ body{
     background-color: #ffff;
 }
 
-/* proggress bar circle */
+/* Progress bar circle */
 
-.box{
+.box {
     position: relative;
     display: flex;
     justify-content: center;
@@ -14,71 +14,71 @@ body{
     gap: 40px;
 }
 
-.box .proggress{
+.box .proggress {
     position: relative;
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    color: white;
-    background: #d9d9d9 linear-gradient(to right, transparent 50%, var(--clr) 0);
+    background-color: #d9d9d9; /* Default background color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.box .proggress h3{
-    position: absolute;
-    top: 60%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+/* Posisi dan gaya teks suhu */
+.box .proggress h3 {
     font-size: 2em;
-    z-index: 1;
-    font-weight: 500;
     color: #000;
+    z-index: 2;
 }
 
-.box .proggress h3 span{
-    font-size: 0.65em;
-    font-weight: 400;
-}
-
-.box .proggress h4{
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
+/* Posisi dan gaya label node */
+.box .proggress h4 {
     font-size: 1.5em;
     font-weight: 500;
     color: #000;
     text-transform: uppercase;
+    position: absolute;
+    top: 30%;
+    z-index: 3; /* Pastikan ini lebih tinggi daripada lapisan grafik cincin */
 }
 
-.box .proggress::before{
-    content: '';
-    display: block;
-    height: 100%;
-    margin-left: 50%;
-    transform-origin: left;
-    border-radius: 0 100% 100% 0/50%;
-}
-
-.box .proggress::after{
+/* Full circle background */
+.box .proggress::before {
     content: '';
     position: absolute;
-    inset: 30px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    background: #fff;
+    background-color: #d9d9d9; /* Same as the default background color */
+    z-index: 1;
 }
 
-/* nilai suhu 0 - 75 derajat c */
-.box .proggress.less::before{
-    background: #d9d9d9;
-    transform: rotate(calc(((((var(--i) / 150 ) * 100) - 0 ) * 0.01turn)));
+/* Semi circle (fill) using conic-gradient for compatibility */
+.box .proggress::after {
+    content: '';
+    position: absolute;
+    width: 200px; /* Same as the .proggress width */
+    height: 200px; /* Same as the .proggress height */
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--clr) var(--i), /* Color starts from 0% to var(--i) value */
+        transparent var(--i) 100% /* Transparent from var(--i) value to 100% */
+    );
+    z-index: 1;
 }
 
-/* nilai suhu 76 - 150 derajat c */
-.box .proggress::before{
-    background: var(--clr);
-    transform: rotate(calc(((((var(--i) / 150 ) * 100) - 50 ) * 0.01turn)));
+/* Inner circle to create the ring effect */
+.box .proggress .inner {
+    position: absolute;
+    width: 160px; /* Smaller than the .proggress width */
+    height: 160px; /* Smaller than the .proggress height */
+    background-color: #fff; /* Color of the inner circle */
+    border-radius: 50%;
+    z-index: 2; /* Above the conic-gradient but below the text */
 }
+
+
 
 /* end */
 
