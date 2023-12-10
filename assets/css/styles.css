@@ -203,14 +203,47 @@ input {
 }
 
 @keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
+    to{
+        transform: rotateY(-360deg);
     }
 }
 
 .diaduk {
     animation: spin 7s linear infinite;
 }
+
+/*button di history*/
+.w-full.lg\:w-1\/4 {
+    /* This is the container for your filter record section */
+    /* Add any specific styles you want for this container */
+}
+
+/* Style for buttons that are not active */
+.w-full.lg\:w-1\/4 ul li button {
+    width: 100%; /* Full width */
+    color: #59280A; /* Brown text */
+    border: 2px solid #FF731D; /* Orange border */
+    background-color: white; /* White background */
+    border-radius: 0.7rem; /* Rounded corners (adjust as needed) */
+    padding: 0.7rem 1rem; /* Padding inside the button (adjust as needed) */
+    font-size: 1.25rem; /* Font size (adjust as needed) */
+    font-weight: medium; /* Font weight (adjust as needed) */
+    text-align: center; /* Center the text */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for color and background */
+}
+
+/* Style for button when active or on hover */
+.w-full.lg\:w-1\/4 ul li button:hover,
+.w-full.lg\:w-1\/4 ul li button.active {
+    color: white; /* White text */
+    background-color: #FF731D; /* Orange background */
+}
+
+/* You can also add focus styles if needed */
+.w-full.lg\:w-1\/4 ul li button:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 0 2px rgba(255, 115, 29, 0.5); /* Custom focus ring */
+}
+
+

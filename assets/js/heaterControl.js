@@ -60,7 +60,7 @@ function setupHeaterControls() {
 function checkAndSetAutoHeaterStatus(nodeId) {
     // Add the server endpoint to fetch the heater status
     // Placeholder URL below, replace with your actual endpoint
-    fetch(`http://10.3.146.122:3000/heater-status/${nodeId}`)
+    fetch(`http://10.3.146.122:3000/heater-status/${nodeId}`) //mungkin perlu bikin table sendiri buat auto biar gak conflict
         .then(response => response.json())
         .then(data => {
             // Assuming the server returns an object with a "status" key
