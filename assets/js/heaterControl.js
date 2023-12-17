@@ -1,6 +1,6 @@
 // Fungsi untuk mengirim status pemanas ke server dan memperbarui tampilan silinder
 function updateHeaterStatus(nodeId, status) {
-    fetch(`http://10.3.146.122:3000/actions/${nodeId}`, {
+    fetch(`http://192.168.130.48:3000/actions/${nodeId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -60,7 +60,7 @@ function setupHeaterControls() {
 function checkAndSetAutoHeaterStatus(nodeId) {
     // Add the server endpoint to fetch the heater status
     // Placeholder URL below, replace with your actual endpoint
-    fetch(`http://10.3.146.122:3000/heater-status/${nodeId}`) //mungkin perlu bikin table sendiri buat auto biar gak conflict
+    fetch(`http://192.168.130.48:3000/heater-status/${nodeId}`) //mungkin perlu bikin table sendiri buat auto biar gak conflict
         .then(response => response.json())
         .then(data => {
             // Assuming the server returns an object with a "status" key
