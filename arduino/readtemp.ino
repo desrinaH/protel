@@ -40,6 +40,12 @@ bool manualControl = false;
 bool relay1ManualState = LOW;
 bool relay2ManualState = LOW;
 
+unsigned long lastRelayToggled = RELAY1_PIN;
+
+unsigned long lastRelayChange = 0;
+const long relayChangeInterval = 5000;  // Interval untuk mengganti relay, dalam milidetik
+
+
 void setup() {
   Serial.begin(9600);
   pinMode(RELAY1_PIN, OUTPUT);
@@ -150,40 +156,48 @@ void controlRelays() {
         float temp4 = thermocouple4.readCelsius();
         float temp5 = thermocouple5.readCelsius();
         float temp6 = thermocouple6.readCelsius();
+        
+        float avg1 = (temp1 + temp2 + temp3) / 3;
+        float avg2 = (temp4 + temp5 + temp6) / 3;
 
-        bool flag1 = (temp1 < 50 && temp2 < 50 && temp3 < 50);
-        bool flag2 = (temp4 < 50 && temp5 < 50 && temp6 < 50);
-
-        unsigned long currentMillis = millis();
+        bool flag1 = (avg1 < 50); //kalibrasi ini
+        bool flag2 = (avg2 < 50); //kalibrasi ini 
 
         if (flag1 && flag2) {
-            isHeatingAll = true; // Semua sensor menunjukkan suhu rendah
-            Serial.println("Semua Sensor Rendah");
-        } else if (flag1) {
+            // Jika kedua grup sensor rendah, pilih salah satu relay untuk diaktifkan
+            unsigned long currentMillis = millis();
+            if (currentMillis - lastRelayChange >= relayChangeInterval) {
+                if (lastRelayToggled == RELAY1_PIN) {
+                    digitalWrite(RELAY1_PIN, LOW);
+                    digitalWrite(RELAY2_PIN, HIGH);
+                    lastRelayToggled = RELAY2_PIN;
+                } else {
+                    digitalWrite(RELAY1_PIN, HIGH);
+                    digitalWrite(RELAY2_PIN, LOW);
+                    lastRelayToggled = RELAY1_PIN;
+                }
+                lastRelayChange = currentMillis;  // Perbarui waktu terakhir pergantian relay
+                Serial.println("Alternating Relays");
+            }
+        }
+        else if (flag1) {
             digitalWrite(RELAY1_PIN, HIGH); // Nyalakan relay 1
             digitalWrite(RELAY2_PIN, LOW);  // Matikan relay 2
-            isHeatingAll = false;
+            lastRelayToggled = RELAY1_PIN;
             Serial.println("Sensor 1-3 Rendah");
         } else if (flag2) {
             digitalWrite(RELAY1_PIN, LOW);  // Matikan relay 1
             digitalWrite(RELAY2_PIN, HIGH); // Nyalakan relay 2
-            isHeatingAll = false;
+            lastRelayToggled = RELAY2_PIN;
             Serial.println("Sensor 4-6 Rendah");
         } else {
             digitalWrite(RELAY1_PIN, LOW); // Matikan relay 1
             digitalWrite(RELAY2_PIN, LOW); // Matikan relay 2
-            isHeatingAll = false;
             Serial.println("Semua Sensor Tinggi");
-        }
-
-        // Logika untuk "pemanasan semua"
-        if (isHeatingAll && currentMillis - lastRelayToggle >= toggleInterval) {
-            digitalWrite(RELAY1_PIN, !digitalRead(RELAY1_PIN));
-            digitalWrite(RELAY2_PIN, !digitalRead(RELAY2_PIN));
-            lastRelayToggle = currentMillis;
         }
     }
 }
+
 
 
 void loop() {
