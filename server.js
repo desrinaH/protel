@@ -43,34 +43,32 @@ app.get('/readings/:node_id', (req, res) => {
 
 // Update sensors
 app.post('/readings', (req, res) => {
-    // const { node_id, suhu1, suhu2, suhu3, suhu4, suhu5, suhu6 } = req.body;
-    // const query = 'INSERT INTO sensorsread (node_id, suhu1, suhu2, suhu3, suhu4, suhu5, suhu6) VALUES (?, ?, ?, ?, ?, ?, ?)';
-
     const { suhu1, suhu2, suhu3, suhu4, suhu5, suhu6 } = req.body;
-    let avg1 = ( suhu1 + suhu2 + suhu3 ) / 3;
-    let avg2 = ( suhu4 + suhu5 + suhu6 ) / 3;
+    let avg1 = (suhu1 + suhu2 + suhu3) / 3;
+    let avg2 = (suhu4 + suhu5 + suhu6) / 3;
     const node1 = 1;
     const node2 = 2;
 
-    const query1 = 'INSERT INTO sensorsread (node1, avg1) VALUES (?, ?)';
-    const query2 = 'INSERT INTO sensorsread (node2, avg2) VALUES (?, ?)';
+    const query1 = 'INSERT INTO sensorsread (node_id, avg_temp) VALUES (?, ?)';
+    const query2 = 'INSERT INTO sensorsread (node_id, avg_temp) VALUES (?, ?)';
 
-    // db.query(query, [node_id, suhu1, suhu2, suhu3, suhu4, suhu5, suhu6], (error, results) => {
-    //     if (error) throw error;
-    //     res.json({ message: 'Sensor updated successfully.' });
-    // });
+    db.query(query1, [node1, avg1], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Error in query 1.' });
+        }
 
-    db.query(query1, [node_id, avg_temp], (error, results) => {
-        if (error) throw error;
-        res.json({ message: 'Sensor average node 1 updated successfully.' });
+        db.query(query2, [node2, avg2], (error, results) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).json({ message: 'Error in query 2.' });
+            }
+
+            res.json({ message: 'Sensor averages updated successfully.' }); 
+        });
     });
-
-    db.query(query2, [node_id, avg_temp], (error, results) => {
-        if (error) throw error;
-        res.json({ message: 'Sensor average node 2 updated successfully.' });
-    });
-
 });
+
 
 // app.post('/readings', (req, res) => {
 //     const { node_id, suhu1 } = req.body;
