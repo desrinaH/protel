@@ -99,8 +99,11 @@ void readSensorData() {
 void checkForSerialCommands() {
     if (Serial.available()) {
         String command = Serial.readStringUntil('\n');
+        command.trim(); // Menghapus spasi dan karakter newline
+
         if (command.startsWith("R1:")) {
             String status = command.substring(3);
+            status.trim(); // Membersihkan string status
             if (status == "ON") {
                 relay1ManualState = HIGH;
                 manualControl = true;
@@ -109,9 +112,12 @@ void checkForSerialCommands() {
                 manualControl = true;
             } else if (status == "AUTO") {
                 manualControl = false;
-            } Serial.print("statusnya R1="); Serial.println(status); Serial.print("statenya R1="); Serial.println(relay1ManualState);
+            }
+            // Debugging
+            Serial.print("Status Relay 1: "); Serial.println(status);
         } else if (command.startsWith("R2:")) {
             String status = command.substring(3);
+            status.trim(); // Membersihkan string status
             if (status == "ON") {
                 relay2ManualState = HIGH;
                 manualControl = true;
@@ -121,61 +127,64 @@ void checkForSerialCommands() {
             } else if (status == "AUTO") {
                 manualControl = false;
             }
-            Serial.print("statusnya R2="); Serial.println(status); Serial.print("statenya R2="); Serial.println(relay2ManualState);
+            // Debugging
+            Serial.print("Status Relay 2: "); Serial.println(status);
         }
     }
-    
 }
+
 
 void controlRelays() {
     if (manualControl) {
-        digitalWrite(RELAY1_PIN, relay1ManualState); Serial.print("relay1=");Serial.println(relay1ManualState);
-        digitalWrite(RELAY2_PIN, relay2ManualState); Serial.print("relay2=");Serial.println(relay2ManualState);
-        Serial.print("manualcontrol="); Serial.println(manualControl);
-        delay(1000);
+        // Kontrol manual
+        digitalWrite(RELAY1_PIN, relay1ManualState);
+        digitalWrite(RELAY2_PIN, relay2ManualState);
+        // Debugging
+        Serial.print("Kontrol Manual: Relay 1 = "); Serial.println(relay1ManualState);
+        Serial.print("Kontrol Manual: Relay 2 = "); Serial.println(relay2ManualState);
     } else {
-        // [Logika kontrol otomatis Anda]
+        // Kontrol otomatis
+        float temp1 = thermocouple1.readCelsius();
+        float temp2 = thermocouple2.readCelsius();
+        float temp3 = thermocouple3.readCelsius();
+        float temp4 = thermocouple4.readCelsius();
+        float temp5 = thermocouple5.readCelsius();
+        float temp6 = thermocouple6.readCelsius();
 
-	  float temp1 = thermocouple1.readCelsius();
-	  float temp2 = thermocouple2.readCelsius();
-	  float temp3 = thermocouple3.readCelsius();
-	  float temp4 = thermocouple4.readCelsius();
-	  float temp5 = thermocouple5.readCelsius();
-	  float temp6 = thermocouple6.readCelsius();
+        bool flag1 = (temp1 < 50 && temp2 < 50 && temp3 < 50);
+        bool flag2 = (temp4 < 50 && temp5 < 50 && temp6 < 50);
 
-	  bool flag1 = (temp1 < 50 && temp2 < 50 && temp3 < 50);
-	  bool flag2 = (temp4 < 50 && temp5 < 50 && temp6 < 50);
+        unsigned long currentMillis = millis();
 
-	  unsigned long currentMillis = millis();
+        if (flag1 && flag2) {
+            isHeatingAll = true; // Semua sensor menunjukkan suhu rendah
+            Serial.println("Semua Sensor Rendah");
+        } else if (flag1) {
+            digitalWrite(RELAY1_PIN, HIGH); // Nyalakan relay 1
+            digitalWrite(RELAY2_PIN, LOW);  // Matikan relay 2
+            isHeatingAll = false;
+            Serial.println("Sensor 1-3 Rendah");
+        } else if (flag2) {
+            digitalWrite(RELAY1_PIN, LOW);  // Matikan relay 1
+            digitalWrite(RELAY2_PIN, HIGH); // Nyalakan relay 2
+            isHeatingAll = false;
+            Serial.println("Sensor 4-6 Rendah");
+        } else {
+            digitalWrite(RELAY1_PIN, LOW); // Matikan relay 1
+            digitalWrite(RELAY2_PIN, LOW); // Matikan relay 2
+            isHeatingAll = false;
+            Serial.println("Semua Sensor Tinggi");
+        }
 
-	  if (flag1 && flag2) {
-		isHeatingAll = true; //lagi dingin
-		Serial.println("ADEM COK");
-	  } else if (flag1) {
-		digitalWrite(RELAY1_PIN, HIGH); // Nyalakan relay 1
-		digitalWrite(RELAY2_PIN, LOW);  // Pastikan relay 2 mati
-		isHeatingAll = false;
-		Serial.println("flag2"); //flag 2 lagi panas
-	  } else if (flag2) {
-		digitalWrite(RELAY1_PIN, LOW);  // Pastikan relay 1 mati
-		digitalWrite(RELAY2_PIN, HIGH); // Nyalakan relay 2
-		isHeatingAll = false;
-		Serial.println("flag1"); //flag 1 lagi panas
-	  } else {
-		digitalWrite(RELAY1_PIN, LOW); // Matikan relay 1
-		digitalWrite(RELAY2_PIN, LOW); // Matikan relay 2 /*relay kita active low -> lampu nyala artinya mati*/
-		isHeatingAll = false;
-		Serial.println("PANAS NJIR"); //semua flag lagi panas
-	  }
-
-	  // Logika untuk "pemanasan all"
-	  if (isHeatingAll && currentMillis - lastRelayToggle >= toggleInterval) {
-		digitalWrite(RELAY1_PIN, !digitalRead(RELAY1_PIN));
-		digitalWrite(RELAY2_PIN, !digitalRead(RELAY2_PIN));
-		lastRelayToggle = currentMillis;
-	  }
+        // Logika untuk "pemanasan semua"
+        if (isHeatingAll && currentMillis - lastRelayToggle >= toggleInterval) {
+            digitalWrite(RELAY1_PIN, !digitalRead(RELAY1_PIN));
+            digitalWrite(RELAY2_PIN, !digitalRead(RELAY2_PIN));
+            lastRelayToggle = currentMillis;
+        }
     }
 }
+
 
 void loop() {
     readSensorData();
