@@ -1,44 +1,83 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <ArduinoJson.h> 
 
-const char* ssid = "";
-const char* password = "";
-const char* serverUrl = "http://192.168.178.150:3000/readings";
+const char* ssid = "Ayam Goreng H.Slamet";        // Ganti dengan SSID WiFi Anda
+const char* password = "ayamayam"; // Ganti dengan Password WiFi Anda
+const char* serverUrl = "http://192.168.88.150:3000/readings";
+const char* serverActuator1Url = "http://192.168.88.150:3000/actions/1"; // Endpoint untuk mengambil perintah dari database
+const char* serverActuator2Url = "http://192.168.88.150:3000/actions/2";
 
 void connectToWiFi() {
+    Serial.print("Connecting to WiFi...");
     WiFi.begin(ssid, password);
+
     while (WiFi.status() != WL_CONNECTED) {
         delay(1000);
-        Serial.println("Connecting to WiFi...");
+        Serial.print(".");
     }
+
     Serial.println("Connected to WiFi");
 }
 
-void sendToServer(float suhu) { //suhu[]
+void sendCommandToArduino(const String &command) {
+  Serial.println(command); // Make sure it ends with a newline character
+}
+
+void fetchActuatorCommand(const char* serverActuatorUrl, const String& relayIdentifier) {
+    if (WiFi.status() == WL_CONNECTED) {
+        HTTPClient http;
+        http.begin(serverActuatorUrl);
+        int httpResponseCode = http.GET();
+
+        if (httpResponseCode == 200) {
+            String responseBody = http.getString();
+            DynamicJsonDocument doc(1024);
+            deserializeJson(doc, responseBody);
+            const char* status = doc["status"]; // Asumsi ada field "status" di JSON
+
+            // Kirim status dengan identifikasi relay ke Arduino
+            Serial.print(relayIdentifier);
+            Serial.println(status);
+        } else {
+            Serial.print("Error fetching actuator command: ");
+            Serial.println(httpResponseCode);
+        }
+        http.end();
+    } else {
+        Serial.println("WiFi not connected!");
+    }
+}
+
+void sendToServer(const String& suhuData) {
     if(WiFi.status() == WL_CONNECTED) {
         HTTPClient http;
         http.begin(serverUrl);
         http.addHeader("Content-Type", "application/json");
 
-        String payload = "{";
-        payload += "\"node_id\":1,"; // Setting value 1 for node_id column
-        payload += "\"suhu1\":" + String(suhu, 2); // Konversi float ke String dengan dua desimal
-        payload += "\"suhu2\":" + String(suhu, 2);
-        payload += "\"suhu3\":" + String(suhu, 2);
-        payload += "\"suhu4\":" + String(suhu, 2);
-        payload += "\"suhu5\":" + String(suhu, 2);
-        payload += "\"suhu6\":" + String(suhu, 2);
-        payload += "}";
+        // Mengirim data ke server dalam format JSON
+        DynamicJsonDocument doc(1024);
+        JsonArray suhuArray = doc.createNestedArray("suhu");
 
-        // String payload = "{";
-        // for (int i = 0; i < 6; i++) {
-        //     payload += "\"suhu" + String(i+1) + "\":" + String(suhus[i], 2);
-        //     if (i < 5) payload += ",";
-        // }
-        // payload += "}";
+        // Pisahkan data suhu yang diterima dan tambahkan ke JSON
+        int start = 0;
+        int end = suhuData.indexOf(',');
+        int suhuIndex = 1;
+        while (end != -1) {
+            String suhu = suhuData.substring(start, end);
+            doc["suhu" + String(suhuIndex)] = suhu.toFloat();
+            start = end + 1;
+            end = suhuData.indexOf(',', start);
+            suhuIndex++;
+        }
+        // Tambahkan suhu terakhir
+        doc["suhu" + String(suhuIndex)] = suhuData.substring(start).toFloat();
+
+        String payload;
+        serializeJson(doc, payload);
 
         int httpResponseCode = http.POST(payload);
-        
+
         if (httpResponseCode > 0) {
             Serial.print("HTTP Response code: ");
             Serial.println(httpResponseCode);
@@ -59,34 +98,18 @@ void setup() {
 }
 
 void loop() {
-    if (Serial.available()) {
-        // Baca data dari Arduino
-        String suhuData = Serial.readStringUntil('\n'); // Baca data sampai newline
-        Serial.print("Data received: ");
-        Serial.println(suhuData); // Cetak data yang diterima ke Serial Monitor
+    // Melakukan polling untuk perintah aktuator dari server
+    fetchActuatorCommand(serverActuator1Url, "R1:");
+    fetchActuatorCommand(serverActuator2Url, "R2:");
 
-        // Konversi string ke float
-        float suhu = suhuData.toFloat();
-        //sendToServer(suhu); // Kirim data ke server
+     if (Serial.available()) {
+        // Membaca data dari Arduino
+        String receivedData = Serial.readStringUntil('\n');
+        if (receivedData.startsWith("TEMP:")) {
+            String suhuData = receivedData.substring(5); // Hapus "TEMP:"
+            sendToServer(suhuData);
+        }
     }
+
+    //delay(5000); // Memberi jeda antara polling ke server dan pengiriman data
 }
-
-// void loop() {
-//     if (Serial.available()) {
-//         // Baca data dari Arduino
-//         String suhuData = Serial.readStringUntil('\n'); // Baca data sampai newline
-//         float suhus[6];
-//         int i = 0;
-//         // Pisahkan data berdasarkan koma dan konversi ke float
-//         int pos = 0;
-//         while (pos != -1) {
-//             int nextPos = suhuData.indexOf(',', pos);
-//             suhus[i++] = suhuData.substring(pos, nextPos).toFloat();
-//             pos = (nextPos >= 0) ? nextPos + 1 : -1;
-//         }
-
-//         // Sekarang Anda memiliki semua data suhu dalam array `suhus`
-//         // Anda bisa mengirimnya satu per satu atau dalam format JSON
-//         sendToServer(suhus);
-//     }
-// }
