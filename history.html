@@ -115,15 +115,20 @@
         </div>
 
         <div class="flex flex-row space-x-6 mt-6">
-            <button type="button" class="node-button text-[#0067B2] border-2 border-[#0067B2] bg-white focus:ring-4 focus:ring-blue-300 rounded-lg lg:rounded-xl text-lg lg:text-xl px-6 lg:px-12 py-2 lg:py-3 font-semibold dark:bg-blue-100 dark:hover:bg-blue-200 focus:outline-none dark:focus:ring-blue-800" data-node-id="1">Node 1</button>
-            <button type="button" class="node-button text-[#0067B2] border-2 border-[#0067B2] bg-white focus:ring-4 focus:ring-blue-300 rounded-lg lg:rounded-xl text-lg lg:text-xl px-6 lg:px-12 py-2 lg:py-3 font-semibold dark:bg-blue-100 dark:hover:bg-blue-200 focus:outline-none dark:focus:ring-blue-800" data-node-id="2">Node 2</button>
+            <button type="button"
+            class="node-button text-[#0067B2] border-2 border-[#0067B2] bg-white focus:ring-4 focus:ring-blue-300 rounded-lg lg:rounded-xl text-lg lg:text-xl px-6 lg:px-12 py-2 lg:py-3 font-semibold dark:bg-blue-100 dark:hover:bg-blue-200 focus:outline-none dark:focus:ring-blue-800">Node
+            1</button>
+        <button type="button"
+            class="node-button text-[#0067B2] border-2 border-[#0067B2] bg-white focus:ring-4 focus:ring-blue-300 rounded-lg lg:rounded-xl text-lg lg:text-xl px-6 lg:px-12 py-2 lg:py-3 font-semibold dark:bg-blue-100 dark:hover:bg-blue-200 focus:outline-none dark:focus:ring-blue-800">Node
+            2</button>
+        
         </div>
 
         <div class="mt-11 flex flex-col-reverse lg:flex-row w-full mx-4 lg:mx-0">
             <div class="w-full sm:w-3/4 pr-4">
                 <h6 class="mb-11 font-base text-xl leading-9 text-black" id="date-display">26 Oktober 2023</h6>
                 <div>
-                    <figure class="highcharts-figure"> <!--graph-->
+                    <figure class="highcharts-figure">
                         <div id="container"></div>
                     </figure>
                 </div>
@@ -132,16 +137,20 @@
                 <h4 class="mb-5 font-semibold text-2xl leading-10 text-black">Filter Record</h4>
                 <ul class="mr-12 lg:mr-8 grid grid-cols-2 sm:grid-cols-1 gap-2">
                     <li class="mb-4">
-                        <button type="button" class="range-button" data-range="tensecond">Seconds</button>
+                        <button type="button"
+                            class="w-full text-white border-2 border-[#FF731D] bg-[#FF731D] focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">seconds</button>
                     </li>
                     <li class="mb-4">
-                        <button type="button" class="range-button" data-range="thirtymins">30 mins</button>
+                        <button type="button"
+                            class="w-full text-[#59280A] border-2 border-[#FF731D] bg-white focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">30 mins</button>
                     </li>
                     <li class="mb-4">
-                        <button type="button" class="range-button" data-range="hourly">Hourly</button>
+                        <button type="button"
+                            class="w-full text-[#59280A] border-2 border-[#FF731D] bg-white focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">Hourly</button>
                     </li>
                     <li class="mb-4">
-                        <button type="button" class="range-button" data-range="daily">Daily</button>
+                        <button type="button"
+                            class="w-full text-[#59280A] border-2 border-[#FF731D] bg-white focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">Daily</button>
                     </li>
                 </ul>
             </div>
@@ -152,6 +161,7 @@
 
     <!-- script js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+    <script src="./assets/js/chartLine.js"></script>
     <script src="./assets/js/buttonRecord.js"></script>
 
     
