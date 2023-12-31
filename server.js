@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const cors = require('cors');
+const { error } = require('console');
 
 const app = express();
 const port = 3000;
@@ -107,6 +108,23 @@ app.get('/actions/:node_id', (req, res) => { //harus buat program di mcu nya unt
         }
     });    
 });
+
+app.get('/actions/auto/:node_id', (req, res) => {
+    const nodeId = req.params.node_id;
+    db.query('SELECT status FROM auto WHERE node_id = ? ORDER BY timestamp DESC LIMIT 1', [nodeId], (error, results) => {
+        if (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        } else {
+            if (results.length > 0) {
+                const status = results[0].status;
+                res.json({ status: status});
+            } else {
+                res.status(404).json({error:'Empty'});
+            }
+        }
+    });
+}); 
 
 app.get('/sensorsread/tensecond/:node_id', (req, res) => {
     const nodeId = req.params.node_id;
