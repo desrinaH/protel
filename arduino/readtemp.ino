@@ -171,10 +171,14 @@ void controlRelays() {
                     digitalWrite(RELAY1_PIN, LOW);
                     digitalWrite(RELAY2_PIN, HIGH);
                     lastRelayToggled = RELAY2_PIN;
+                    Serial.print("Auto1:"); Serial.println(RELAY1_PIN);
+                    Serial.print("Auto2:"); Serial.println(RELAY2_PIN);
                 } else {
                     digitalWrite(RELAY1_PIN, HIGH);
                     digitalWrite(RELAY2_PIN, LOW);
                     lastRelayToggled = RELAY1_PIN;
+                    Serial.print("Auto1:"); Serial.println(RELAY1_PIN);
+                    Serial.print("Auto2:"); Serial.println(RELAY2_PIN);
                 }
                 lastRelayChange = currentMillis;  // Perbarui waktu terakhir pergantian relay
                 Serial.println("Alternating Relays");
@@ -185,15 +189,22 @@ void controlRelays() {
             digitalWrite(RELAY2_PIN, LOW);  // Matikan relay 2
             lastRelayToggled = RELAY1_PIN;
             Serial.println("Sensor 1-3 Rendah");
+            Serial.print("Auto1:"); Serial.println(RELAY1_PIN);
+            Serial.print("Auto2:"); Serial.println(RELAY2_PIN);
+
         } else if (flag2) {
             digitalWrite(RELAY1_PIN, LOW);  // Matikan relay 1
             digitalWrite(RELAY2_PIN, HIGH); // Nyalakan relay 2
             lastRelayToggled = RELAY2_PIN;
             Serial.println("Sensor 4-6 Rendah");
+            Serial.print("Auto1:"); Serial.println(RELAY1_PIN);
+            Serial.print("Auto2:"); Serial.println(RELAY2_PIN);
         } else {
             digitalWrite(RELAY1_PIN, LOW); // Matikan relay 1
             digitalWrite(RELAY2_PIN, LOW); // Matikan relay 2
             Serial.println("Semua Sensor Tinggi");
+            Serial.print("Auto1:"); Serial.println(RELAY1_PIN);
+            Serial.print("Auto2:"); Serial.println(RELAY2_PIN);
         }
     }
 }
