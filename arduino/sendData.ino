@@ -4,9 +4,9 @@
 
 const char* ssid = "Ayam Goreng H.Slamet";        // Ganti dengan SSID WiFi Anda
 const char* password = "ayamayam"; // Ganti dengan Password WiFi Anda
-const char* serverUrl = "http://192.168.88.150:3000/readings";
-const char* serverActuator1Url = "http://192.168.88.150:3000/actions/1"; // Endpoint untuk mengambil perintah dari database
-const char* serverActuator2Url = "http://192.168.88.150:3000/actions/2";
+const char* serverUrl = "http://192.168.102.150:3000/readings";
+const char* serverActuator1Url = "http://192.168.102.150:3000/actions/1"; // Endpoint untuk mengambil perintah dari database
+const char* serverActuator2Url = "http://192.168.102.150:3000/actions/2";
 
 void connectToWiFi() {
     Serial.print("Connecting to WiFi...");
@@ -92,6 +92,48 @@ void sendToServer(const String& suhuData) {
     }
 }
 
+void readFromArduino() {
+    if (Serial.available()) {
+        String line = Serial.readStringUntil('\n');
+        if (line.startsWith("Auto1:") || line.startsWith("Auto2:")) {
+            sendRelayStatusToServer(line);
+        }
+    }
+}
+
+void sendRelayStatusToServer(const String& relayStatus) {
+    if(WiFi.status() == WL_CONNECTED) {
+        HTTPClient http;
+        String serverEndPoint;
+        
+        if(relayStatus.startsWith("Auto1:")) {
+            serverEndPoint = "http://192.168.102.150:3000/actions/auto/1";
+        } else if(relayStatus.startsWith("Auto2:")) {
+            serverEndPoint = "http://192.168.102.150:3000/actions/auto/2";
+        } else {
+            return; // Jika data tidak sesuai format, tidak dikirim
+        }
+
+        http.begin(serverEndPoint);
+        http.addHeader("Content-Type", "text/plain");
+
+        int httpResponseCode = http.POST(relayStatus);
+
+        if (httpResponseCode > 0) {
+            Serial.print("HTTP Response code: ");
+            Serial.println(httpResponseCode);
+        } else {
+            Serial.print("Error code: ");
+            Serial.println(httpResponseCode);
+        }
+
+        http.end();
+    } else {
+        Serial.println("WiFi not connected!");
+    }
+}
+
+
 void setup() {
     Serial.begin(9600);
     connectToWiFi();
@@ -110,6 +152,8 @@ void loop() {
             sendToServer(suhuData);
         }
     }
+
+    readFromArduino();
 
     //delay(5000); // Memberi jeda antara polling ke server dan pengiriman data
 }
