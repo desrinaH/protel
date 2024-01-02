@@ -30,7 +30,7 @@ function updateTemperatureDisplay(nodeId, avgTemp) {
 
 // Fungsi ini dijalankan setelah data di-fetch
 function fetchTemperatureData(nodeId) {
-    fetch(`http://192.168.102.150:3000/readings/${nodeId}`)
+    fetch(`http://10.3.146.122:3000/readings/${nodeId}`)
         .then(response => response.json())
         .then(data => {
             if(data.avg_temp) {
