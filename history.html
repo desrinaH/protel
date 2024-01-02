@@ -83,7 +83,7 @@
                         </svg>
 
 
-                        <span class="ml-5 font-medium leading-9 text-white">History</span>
+                        <span class="ml-5 font-small leading-9 text-white">Record</span>
                     </a>
                 </li>
             </ul>
@@ -110,22 +110,23 @@
     <!-- Content -->
     <div class="p-4 ml-2 sm:mt-10 sm:ml-72">
         <div>
-            <h1 class="font-semibold text-3xl sm:text-[56px] mb-1 sm:mb-2">History</h1>
+            <h1 class="font-semibold text-3xl sm:text-[56px] mb-1 sm:mb-2">Record Graph</h1>
             <div class="w-[55px] sm:w-[112px] bg-[#FF731D] h-1 sm:h-2 rounded-[21px]"></div>
         </div>
 
         <div class="flex flex-row space-x-6 mt-6">
             <button type="button"
-                class="text-white bg-[#0067B2] focus:ring-4 focus:ring-blue-300 rounded-lg lg:rounded-xl text-lg lg:text-xl px-6 lg:px-12 py-2 lg:py-3 font-semibold dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Node
-                Satu</button>
-            <button type="button"
-                class="text-[#0067B2] border-2 border-[#0067B2] bg-white focus:ring-4 focus:ring-blue-300 rounded-lg lg:rounded-xl text-lg lg:text-xl px-6 lg:px-12 py-2 lg:py-3 font-semibold dark:bg-blue-100 dark:hover:bg-blue-200 focus:outline-none dark:focus:ring-blue-800">Node
-                Dua</button>
+            class="node-button text-[#0067B2] border-2 border-[#0067B2] bg-white focus:ring-4 focus:ring-blue-300 rounded-lg lg:rounded-xl text-lg lg:text-xl px-6 lg:px-12 py-2 lg:py-3 font-semibold dark:bg-blue-100 dark:hover:bg-blue-200 focus:outline-none dark:focus:ring-blue-800">Node
+            1</button>
+        <button type="button"
+            class="node-button text-[#0067B2] border-2 border-[#0067B2] bg-white focus:ring-4 focus:ring-blue-300 rounded-lg lg:rounded-xl text-lg lg:text-xl px-6 lg:px-12 py-2 lg:py-3 font-semibold dark:bg-blue-100 dark:hover:bg-blue-200 focus:outline-none dark:focus:ring-blue-800">Node
+            2</button>
+        
         </div>
 
         <div class="mt-11 flex flex-col-reverse lg:flex-row w-full mx-4 lg:mx-0">
             <div class="w-full sm:w-3/4 pr-4">
-                <h6 class="mb-11 font-base text-xl leading-9 text-black" id="">26 Oktober 2023</h6>
+                <h6 class="mb-11 font-base text-xl leading-9 text-black" id="date-display">26 Oktober 2023</h6>
                 <div>
                     <figure class="highcharts-figure">
                         <div id="container"></div>
@@ -133,23 +134,23 @@
                 </div>
             </div>
             <div class="w-full lg:w-1/4">
-                <h4 class="mb-5 font-semibold text-2xl leading-10 text-black">Filter Tanggal</h4>
+                <h4 class="mb-5 font-semibold text-2xl leading-10 text-black">Filter Record</h4>
                 <ul class="mr-12 lg:mr-8 grid grid-cols-2 sm:grid-cols-1 gap-2">
                     <li class="mb-4">
                         <button type="button"
-                            class="w-full text-white border-2 border-[#FF731D] bg-[#FF731D] focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">Harian</button>
+                            class="w-full text-white border-2 border-[#FF731D] bg-[#FF731D] focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">seconds</button>
                     </li>
                     <li class="mb-4">
                         <button type="button"
-                            class="w-full text-[#59280A] border-2 border-[#FF731D] bg-white focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">Mingguan</button>
+                            class="w-full text-[#59280A] border-2 border-[#FF731D] bg-white focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">30 mins</button>
                     </li>
                     <li class="mb-4">
                         <button type="button"
-                            class="w-full text-[#59280A] border-2 border-[#FF731D] bg-white focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">Bulanan</button>
+                            class="w-full text-[#59280A] border-2 border-[#FF731D] bg-white focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">Hourly</button>
                     </li>
                     <li class="mb-4">
                         <button type="button"
-                            class="w-full text-[#59280A] border-2 border-[#FF731D] bg-white focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">Tahunan</button>
+                            class="w-full text-[#59280A] border-2 border-[#FF731D] bg-white focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">Daily</button>
                     </li>
                 </ul>
             </div>
@@ -161,6 +162,8 @@
     <!-- script js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
     <script src="./assets/js/chartLine.js"></script>
+    <script src="./assets/js/buttonRecord.js"></script>
+
     
 </body>
 

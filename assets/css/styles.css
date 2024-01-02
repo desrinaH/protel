@@ -1,0 +1,249 @@
+body{
+    font-family: 'Poppins', sans-serif;
+    background-color: #ffff;
+}
+
+/* Progress bar circle */
+
+.box {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+
+.box .proggress {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-color: #d9d9d9; /* Default background color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Posisi dan gaya teks suhu */
+.box .proggress h3 {
+    font-size: 2em;
+    color: #000;
+    z-index: 2;
+}
+
+/* Posisi dan gaya label node */
+.box .proggress h4 {
+    font-size: 1.5em;
+    font-weight: 500;
+    color: #000;
+    text-transform: uppercase;
+    position: absolute;
+    top: 30%;
+    z-index: 3; /* Pastikan ini lebih tinggi daripada lapisan grafik cincin */
+}
+
+/* Full circle background */
+.box .proggress::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #d9d9d9; /* Same as the default background color */
+    z-index: 1;
+}
+
+/* Semi circle (fill) using conic-gradient for compatibility */
+.box .proggress::after {
+    content: '';
+    position: absolute;
+    width: 200px; /* Same as the .proggress width */
+    height: 200px; /* Same as the .proggress height */
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--clr) var(--i), /* Color starts from 0% to var(--i) value */
+        transparent var(--i) 100% /* Transparent from var(--i) value to 100% */
+    );
+    z-index: 1;
+}
+
+/* Inner circle to create the ring effect */
+.box .proggress .inner {
+    position: absolute;
+    width: 160px; /* Smaller than the .proggress width */
+    height: 160px; /* Smaller than the .proggress height */
+    background-color: #fff; /* Color of the inner circle */
+    border-radius: 50%;
+    z-index: 2; /* Above the conic-gradient but below the text */
+}
+
+
+
+/* end */
+
+/* chart Line */
+
+.highcharts-figure,
+.highcharts-data-table table {
+    min-width: 360px;
+    max-width: 800px;
+    margin: 1em auto;
+}
+
+.highcharts-data-table table {
+    font-family: Verdana, sans-serif;
+    border-collapse: collapse;
+    border: 1px solid #ebebeb;
+    margin: 10px auto;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+.highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+}
+
+.highcharts-data-table th {
+    font-weight: 600;
+    padding: 0.5em;
+}
+
+.highcharts-data-table td,
+.highcharts-data-table th,
+.highcharts-data-table caption {
+    padding: 0.5em;
+}
+
+.highcharts-data-table thead tr,
+.highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+}
+
+.highcharts-data-table tr:hover {
+    background: #f1f7ff;
+}
+
+/* end */
+
+/* start tabung minyak */
+
+input {
+	margin-bottom: 30px;
+}
+
+.cylinder {
+	position: relative;
+	overflow: hidden;
+	margin: 0 auto;
+	width: 150px;
+	height: 300px;
+	border-radius: 50px/25px;
+	background-color: rgba(160, 160, 160, 0.5);
+}
+
+.cylinder:before {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 150px;
+	height: 50px;
+	border-radius: 50px/25px;
+	background-color: rgba(0, 0, 0, 0.2);
+	content: '';
+}
+
+.cylinder:after {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 150px;
+	height: 50px;
+	border-radius: 50px/25px;
+	background-color: rgba(22, 22, 22, 0.4);
+	content: '';
+}
+
+.minyak {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 150px;
+	height: 0;
+	padding-top: 50px;
+	border-radius: 50px/25px;
+	background-color: rgba(0, 160, 160, 0.5);
+	transition: 0.3s linear;
+}
+
+
+.node2 {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 150px;
+	height: 160px;
+	border-radius: 50px/25px;
+	content: '';
+    z-index: 2;
+}
+
+.node1 {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 150px;
+	height: 300px;
+	border-radius: 50px/25px;
+	content: '';
+    z-index: 1;
+}
+
+@keyframes spin {
+    to{
+        transform: rotateY(-360deg);
+    }
+}
+
+.diaduk {
+    animation: spin 7s linear infinite;
+}
+
+/*button di history*/
+.w-full.lg\:w-1\/4 {
+    /* This is the container for your filter record section */
+    /* Add any specific styles you want for this container */
+}
+
+/* Style for buttons that are not active */
+.w-full.lg\:w-1\/4 ul li button {
+    width: 100%; /* Full width */
+    color: #59280A; /* Brown text */
+    border: 2px solid #FF731D; /* Orange border */
+    background-color: white; /* White background */
+    border-radius: 0.7rem; /* Rounded corners (adjust as needed) */
+    padding: 0.7rem 1rem; /* Padding inside the button (adjust as needed) */
+    font-size: 1.25rem; /* Font size (adjust as needed) */
+    font-weight: medium; /* Font weight (adjust as needed) */
+    text-align: center; /* Center the text */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for color and background */
+}
+
+/* Style for button when active or on hover */
+.w-full.lg\:w-1\/4 ul li button:hover,
+.w-full.lg\:w-1\/4 ul li button.active {
+    color: white; /* White text */
+    background-color: #FF731D; /* Orange background */
+}
+
+/* You can also add focus styles if needed */
+.w-full.lg\:w-1\/4 ul li button:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 0 2px rgba(255, 115, 29, 0.5); /* Custom focus ring */
+}
+
+
