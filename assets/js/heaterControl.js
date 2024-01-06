@@ -77,6 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch initial heater status for both nodes
     // Assuming you have an endpoint to get the current status
     // If you don't, remove these lines
+    const mixerCheckbox = document.getElementById('kontrol_pengaduk');
+    mixerCheckbox.addEventListener('change', (event) => {
+        const nodeId = event.target.value; // This should be '3' for mixer
+        const status = event.target.checked ? 'ON' : 'OFF';
+        updateHeaterStatus(nodeId, status);
+    });
     checkAndSetAutoHeaterStatus(1);
     checkAndSetAutoHeaterStatus(2);
 });
