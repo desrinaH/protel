@@ -16,11 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const nodeButtons = document.querySelectorAll('.node-button');
     const rangeButtons = document.querySelectorAll('.range-button');
 
-    // Initialize Highcharts chart with useUTC set to false
+
+    // Initialize Highcharts chart
     const chart = Highcharts.chart('container', {
         chart: {
             type: 'line',
-            useUTC: false // Ensure Highcharts does not use UTC
+
         },
         title: {
             text: 'Real-time Temperature Data'
@@ -54,26 +55,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000); // Set to fetch every second
     }
 
-    // Function to fetch data and update chart
-    function updateChartData(nodeId, range) {
-        const apiEndpoint = `http://192.168.102.150:3000/sensorsread/${range}/${nodeId}`;
-        fetch(apiEndpoint)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok: ' + response.statusText);
-                }
-                return response.json(); // This parses the JSON of the response
-            })
-            .then(data => {
-                const processedData = data.map(item => {
-                    const utcDate = new Date(item.timestamp); // Create a Date object from the UTC timestamp
-                    const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000); // Convert to local time
-                    return [localDate.getTime(), item.avg_temp]; // Use local time in milliseconds
-                });
-                chart.series[0].setData(processedData, true, true, false);
-            })
-            .catch(error => console.error('Error fetching data:', error));
-    }
+
+// Function to fetch data and update chart
+function updateChartData(nodeId, range) {
+    const apiEndpoint = `http://192.168.156.150:3000/sensorsread/${range}/${nodeId}`;
+    fetch(apiEndpoint)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.json(); // This parses the JSON of the response
+        })
+        .then(data => {
+            const timezoneOffset = 25200000; // Offset for WIB in milliseconds (7 hours)
+            const processedData = data.map(item => {
+                // Add the timezone offset here
+                return [new Date(item.timestamp).getTime() + timezoneOffset, item.avg_temp];
+            });
+            chart.series[0].setData(processedData, true, true, false);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}
+
+
 
     // Add event listeners for node buttons
     nodeButtons.forEach(button => {
@@ -93,20 +97,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Add event listeners for range filter buttons
-    rangeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Remove active class from all buttons
-            rangeButtons.forEach(btn => btn.classList.remove('active'));
-            // Add active class to the clicked button
-            this.classList.add('active');
+// Add event listeners for range filter buttons
+rangeButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        // Remove active class from all buttons
+        rangeButtons.forEach(btn => btn.classList.remove('active'));
+        // Add active class to the clicked button
+        this.classList.add('active');
 
-            const activeNodeButton = document.querySelector('.node-button.bg-[#0067B2]');
-            const nodeId = activeNodeButton ? activeNodeButton.getAttribute('data-node-id') : 'defaultNodeId';
-            const range = this.getAttribute('data-range');
-            startDataFetch(nodeId, range);
-        });
+        const activeNodeButton = document.querySelector('.node-button.bg-[#0067B2]');
+        const nodeId = activeNodeButton ? activeNodeButton.getAttribute('data-node-id') : 'defaultNodeId';
+        const range = this.getAttribute('data-range');
+        startDataFetch(nodeId, range);
     });
+});
+
+
 
     // Start the data fetch for the default node and range when the page loads
     const defaultNodeId = nodeButtons.length > 0 ? nodeButtons[0].getAttribute('data-node-id') : 'defaultNodeId';
