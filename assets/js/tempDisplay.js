@@ -6,20 +6,20 @@ function updateTemperatureDisplay(nodeId, avgTemp) {
         const temperatureElement = nodeElement.querySelector('h3');
         temperatureElement.textContent = `${avgTemp} °C`;
 
-
         // Hitung persentase untuk suhu, asumsikan 200 sebagai suhu maksimal
         const percentage = (avgTemp / 200) * 100; 
-
 
         // Tetapkan properti CSS --i untuk persentase lingkaran
         nodeElement.style.setProperty('--i', `${percentage}%`);
 
         // Tetapkan warna untuk lingkaran berdasarkan suhu
         let color;
-        if (avgTemp >= 80 && avgTemp <= 100) {
-            color = 'red'; // Warna merah untuk suhu 80-100
+        if (avgTemp > 175) {
+            color = 'red'; // Warna merah untuk suhu di atas 150
+        } else if (avgTemp > 135) {
+            color = 'orange'; // Warna oranye untuk suhu 101-150
         } else {
-            color = '#1C71F1D9'; // Warna biru sebagai default
+            color = '#1C71F1D9'; // Warna biru sebagai default untuk suhu 100 atau kurang
         }
         nodeElement.style.setProperty('--clr', color);
     } else {
@@ -30,9 +30,7 @@ function updateTemperatureDisplay(nodeId, avgTemp) {
 
 // Fungsi ini dijalankan setelah data di-fetch
 function fetchTemperatureData(nodeId) {
-
     fetch(`http://192.168.156.150:3000/readings/${nodeId}`)
-
         .then(response => response.json())
         .then(data => {
             if(data.avg_temp) {
