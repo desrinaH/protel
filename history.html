@@ -57,12 +57,12 @@
         class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
         aria-label="Sidebar">
         <div class="h-full px-3 py-4 overflow-y-auto bg-[#0067B2]">
-            <a href="/index.html" class="">
+            <a href="/protel/index.html" class="">
                 <img src="./assets/images/logo-triopus.svg" class="h-6 mx-auto sm:h-7 mt-8 mb-16" alt="TRIOPUS Logo" />
             </a>
             <ul class="space-y-2 mx-8 font-medium">
                 <li>
-                    <a href="/index.html"
+                    <a href="/protel/index.html"
                         class="flex items-center py-2 px-4 text-gray-900 rounded-lg dark:text-white hover:bg-[#FF731D] dark:hover:bg-gray-700 group">
                         <svg width="21" height="24" viewBox="0 0 21 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -87,8 +87,8 @@
                     </a>
                 </li>
             </ul>
-            <!--<ul class="mt-64 mx-8 font-medium">
-                <li>
+            <ul class="mt-64 mx-8 font-medium">
+                <!--<li>
                     <a href="#"
                         class="flex items-center py-2 px-4 text-gray-900 rounded-lg dark:text-white hover:bg-[#FF731D] dark:hover:bg-gray-700 group">
                         <svg width="39" height="38" viewBox="0 0 39 38" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -101,8 +101,8 @@
 
                         <span class="ml-5 font-medium leading-9 text-white">Keluar</span>
                     </a>
-                </li>
-            </ul>-->
+                </li>-->
+            </ul>
         </div>
     </aside>
     <!-- Akhir Sidebar -->
@@ -115,20 +115,15 @@
         </div>
 
         <div class="flex flex-row space-x-6 mt-6">
-            <button type="button"
-            class="node-button text-[#0067B2] border-2 border-[#0067B2] bg-white focus:ring-4 focus:ring-blue-300 rounded-lg lg:rounded-xl text-lg lg:text-xl px-6 lg:px-12 py-2 lg:py-3 font-semibold dark:bg-blue-100 dark:hover:bg-blue-200 focus:outline-none dark:focus:ring-blue-800">Node
-            1</button>
-        <button type="button"
-            class="node-button text-[#0067B2] border-2 border-[#0067B2] bg-white focus:ring-4 focus:ring-blue-300 rounded-lg lg:rounded-xl text-lg lg:text-xl px-6 lg:px-12 py-2 lg:py-3 font-semibold dark:bg-blue-100 dark:hover:bg-blue-200 focus:outline-none dark:focus:ring-blue-800">Node
-            2</button>
-        
+            <button type="button" class="node-button text-[#0067B2] border-2 border-[#0067B2] bg-white focus:ring-4 focus:ring-blue-300 rounded-lg lg:rounded-xl text-lg lg:text-xl px-6 lg:px-12 py-2 lg:py-3 font-semibold dark:bg-blue-100 dark:hover:bg-blue-200 focus:outline-none dark:focus:ring-blue-800" data-node-id="1">Node 1</button>
+            <button type="button" class="node-button text-[#0067B2] border-2 border-[#0067B2] bg-white focus:ring-4 focus:ring-blue-300 rounded-lg lg:rounded-xl text-lg lg:text-xl px-6 lg:px-12 py-2 lg:py-3 font-semibold dark:bg-blue-100 dark:hover:bg-blue-200 focus:outline-none dark:focus:ring-blue-800" data-node-id="2">Node 2</button>
         </div>
 
         <div class="mt-11 flex flex-col-reverse lg:flex-row w-full mx-4 lg:mx-0">
             <div class="w-full sm:w-3/4 pr-4">
                 <h6 class="mb-11 font-base text-xl leading-9 text-black" id="date-display">26 Oktober 2023</h6>
                 <div>
-                    <figure class="highcharts-figure">
+                    <figure class="highcharts-figure"> <!--graph-->
                         <div id="container"></div>
                     </figure>
                 </div>
@@ -137,20 +132,16 @@
                 <h4 class="mb-5 font-semibold text-2xl leading-10 text-black">Filter Record</h4>
                 <ul class="mr-12 lg:mr-8 grid grid-cols-2 sm:grid-cols-1 gap-2">
                     <li class="mb-4">
-                        <button type="button"
-                            class="w-full text-white border-2 border-[#FF731D] bg-[#FF731D] focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">seconds</button>
+                        <button type="button" class="range-button" data-range="tensecond">Seconds</button>
                     </li>
                     <li class="mb-4">
-                        <button type="button"
-                            class="w-full text-[#59280A] border-2 border-[#FF731D] bg-white focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">30 mins</button>
+                        <button type="button" class="range-button" data-range="thirtymins">30 mins</button>
                     </li>
                     <li class="mb-4">
-                        <button type="button"
-                            class="w-full text-[#59280A] border-2 border-[#FF731D] bg-white focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">Hourly</button>
+                        <button type="button" class="range-button" data-range="hourly">Hourly</button>
                     </li>
                     <li class="mb-4">
-                        <button type="button"
-                            class="w-full text-[#59280A] border-2 border-[#FF731D] bg-white focus:ring-4 focus:ring-orange-300 rounded-lg sm:rounded-xl text-sm sm:text-xl px-5 py-2.5 sm:px-12 sm:py-3 font-medium dark:bg-orange-100 dark:hover:bg-orange-200 focus:outline-none dark:focus:ring-orange-800">Daily</button>
+                        <button type="button" class="range-button" data-range="daily">Daily</button>
                     </li>
                 </ul>
             </div>
@@ -161,7 +152,6 @@
 
     <!-- script js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
-    <script src="./assets/js/chartLine.js"></script>
     <script src="./assets/js/buttonRecord.js"></script>
 
     
