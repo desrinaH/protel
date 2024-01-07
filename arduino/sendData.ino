@@ -2,11 +2,12 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h> 
 
-const char* ssid = "Ayam Goreng H.Slamet";        // Ganti dengan SSID WiFi Anda
-const char* password = "ayamayam"; // Ganti dengan Password WiFi Anda
-const char* serverUrl = "http://192.168.102.150:3000/readings";
-const char* serverActuator1Url = "http://192.168.102.150:3000/actions/1"; // Endpoint untuk mengambil perintah dari database
-const char* serverActuator2Url = "http://192.168.102.150:3000/actions/2";
+const char* ssid = "Xiaomi 12 Lite";        // Ganti dengan SSID WiFi Anda
+const char* password = "dbd201fe2552"; // Ganti dengan Password WiFi Anda
+const char* serverUrl = "http://192.168.156.150:3000/readings";
+const char* serverActuator1Url = "http://192.168.156.150:3000/actions/1"; // Endpoint untuk mengambil perintah dari database
+const char* serverActuator2Url = "http://192.168.156.150:3000/actions/2";
+const char* serverActuator3Url = "http://192.168.156.150:3000/actions/3";
 
 void connectToWiFi() {
     Serial.print("Connecting to WiFi...");
@@ -107,9 +108,9 @@ void sendRelayStatusToServer(const String& relayStatus) {
         String serverEndPoint;
         
         if(relayStatus.startsWith("Auto1:")) {
-            serverEndPoint = "http://192.168.102.150:3000/actions/auto/1";
+            serverEndPoint = "http://192.168.156.150:3000/actions/auto/1";
         } else if(relayStatus.startsWith("Auto2:")) {
-            serverEndPoint = "http://192.168.102.150:3000/actions/auto/2";
+            serverEndPoint = "http://192.168.156.150:3000/actions/auto/2";
         } else {
             return; // Jika data tidak sesuai format, tidak dikirim
         }
@@ -143,6 +144,7 @@ void loop() {
     // Melakukan polling untuk perintah aktuator dari server
     fetchActuatorCommand(serverActuator1Url, "R1:");
     fetchActuatorCommand(serverActuator2Url, "R2:");
+    fetchActuatorCommand(serverActuator3Url, "R3:");
 
      if (Serial.available()) {
         // Membaca data dari Arduino
