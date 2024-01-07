@@ -63,7 +63,7 @@ body{
     border-radius: 50%;
     background: conic-gradient(
         var(--clr) var(--i), /* Color starts from 0% to var(--i) value */
-        transparent var(--i) 100% /* Transparent from var(--i) value to 100% */ 
+        transparent var(--i) 100% /* Transparent from var(--i) value to 100% */
     );
     z-index: 1;
 }
