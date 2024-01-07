@@ -12,11 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
         dateDisplay.textContent = formatDate(currentDate);
     }
 
-        // Define the nodeButtons and rangeButtons variable at the top scope
-        const nodeButtons = document.querySelectorAll('.node-button');
-        const rangeButtons = document.querySelectorAll('.range-button');
+    // Define the nodeButtons and rangeButtons variable at the top scope
+    const nodeButtons = document.querySelectorAll('.node-button');
+    const rangeButtons = document.querySelectorAll('.range-button');
 
-           // Initialize Highcharts chart
+    // Initialize Highcharts chart
     const chart = Highcharts.chart('container', {
         chart: {
             type: 'line',
@@ -78,7 +78,7 @@ function updateChartData(nodeId, range) {
     // Add event listeners for node buttons
     nodeButtons.forEach(button => {
         button.addEventListener('click', function() {
-             // Toggle button active state
+            // Toggle button active state
             nodeButtons.forEach(btn => {
                 btn.classList.remove('bg-[#0067B2]', 'text-white');
                 btn.classList.add('text-[#0067B2]', 'bg-white');
