@@ -20,18 +20,19 @@ MAX6675 thermocouple5(CLK_PIN, CS_PIN5, SO_PIN);
 MAX6675 thermocouple6(CLK_PIN, CS_PIN6, SO_PIN);
 
 // Pin untuk relay
-#define RELAY1_PIN 10  // Relay 1 di pin 10
-#define RELAY2_PIN 11  // Relay 2 di pin 11
+#define RELAY1_PIN 10
+#define RELAY2_PIN 8
+#define RELAY3_PIN 9
 
 // Variabel global untuk pembacaan sensor
-unsigned long lastReadTime = 0; // Waktu terakhir sensor dibaca
-const long readInterval = 1000; // Jeda satu detik
-int sensorIndex = 1; // Sensor yang akan dibaca
+unsigned long lastReadTime = 0;
+const long readInterval = 1000;
+int sensorIndex = 1;
 
 // Variabel global untuk kontrol relay
 bool isHeatingAll = false;
 unsigned long lastRelayToggle = 0;
-const int toggleInterval = 3000; // Jeda antar relay saat heating all
+const int toggleInterval = 3000;
 
 float suhu[6];
 
@@ -39,117 +40,126 @@ float suhu[6];
 bool manualControl = false;
 bool relay1ManualState = LOW;
 bool relay2ManualState = LOW;
+bool relay3ManualState = LOW;
 
 unsigned long lastRelayToggled = RELAY1_PIN;
 
 unsigned long lastRelayChange = 0;
-const long relayChangeInterval = 5000;  // Interval untuk mengganti relay, dalam milidetik
-
+const long relayChangeInterval = 5000;
 
 void setup() {
   Serial.begin(9600);
   pinMode(RELAY1_PIN, OUTPUT);
   pinMode(RELAY2_PIN, OUTPUT);
+  pinMode(RELAY3_PIN, OUTPUT);
   digitalWrite(RELAY1_PIN, LOW);
   digitalWrite(RELAY2_PIN, LOW);
+  digitalWrite(RELAY3_PIN, LOW);
 }
 
 float readValidTemperature(MAX6675& thermocouple, MAX6675& nextThermocouple) {
-    float temp = thermocouple.readCelsius();
-    if (isnan(temp)) {
-        // Jika data NaN, ambil data dari sensor sebelahnya
-        return nextThermocouple.readCelsius();
-    }
-    return temp;
+  float temp = thermocouple.readCelsius();
+  if (isnan(temp)) {
+    return nextThermocouple.readCelsius();
+  }
+  return temp;
 }
 
 void readSensorData() {
-    static unsigned long lastReadTime = 0;
-    static int sensorIndex = 1;
-    unsigned long currentMillis = millis();
+  unsigned long currentMillis = millis();
 
-    if (currentMillis - lastReadTime >= readInterval) {
-        switch (sensorIndex) {
-            case 1:
-                suhu[0] = readValidTemperature(thermocouple1, thermocouple2);
-                break;
-            case 2:
-                suhu[1] = readValidTemperature(thermocouple2, thermocouple3);
-                break;
-            case 3:
-                suhu[2] = readValidTemperature(thermocouple3, thermocouple4);
-                break;
-            case 4:
-                suhu[3] = readValidTemperature(thermocouple4, thermocouple5);
-                break;
-            case 5:
-                suhu[4] = readValidTemperature(thermocouple5, thermocouple6);
-                break;
-            case 6:
-                suhu[5] = readValidTemperature(thermocouple6, thermocouple1);
-                // Setelah semua sensor dibaca, kirim data suhu ke ESP32
-                Serial.print("TEMP:");
-                for (int i = 0; i < 6; i++) {
-                    Serial.print(suhu[i]);
-                    if (i < 5) Serial.print(",");
-                }
-                Serial.println();
-                sensorIndex = 0; // Reset untuk memulai lagi dari sensor 1
-                break;
+  if (currentMillis - lastReadTime >= readInterval) {
+    switch (sensorIndex) {
+      case 1:
+        suhu[0] = readValidTemperature(thermocouple1, thermocouple2);
+        break;
+      case 2:
+        suhu[1] = readValidTemperature(thermocouple2, thermocouple3);
+        break;
+      case 3:
+        suhu[2] = readValidTemperature(thermocouple3, thermocouple4);
+        break;
+      case 4:
+        suhu[3] = readValidTemperature(thermocouple4, thermocouple5);
+        break;
+      case 5:
+        suhu[4] = readValidTemperature(thermocouple5, thermocouple6);
+        break;
+      case 6:
+        suhu[5] = readValidTemperature(thermocouple6, thermocouple1);
+        Serial.print("TEMP:");
+        for (int i = 0; i < 6; i++) {
+          Serial.print(suhu[i]);
+          if (i < 5) Serial.print(",");
         }
-        lastReadTime = currentMillis;
-        sensorIndex++;
+        Serial.println();
+        sensorIndex = 0;
+        break;
     }
+    lastReadTime = currentMillis;
+    sensorIndex++;
+  }
 }
 
 void checkForSerialCommands() {
-    if (Serial.available()) {
-        String command = Serial.readStringUntil('\n');
-        command.trim(); // Menghapus spasi dan karakter newline
+  if (Serial.available()) {
+    String command = Serial.readStringUntil('\n');
+    command.trim();
 
-        if (command.startsWith("R1:")) {
-            String status = command.substring(3);
-            status.trim(); // Membersihkan string status
-            if (status == "ON") {
-                relay1ManualState = HIGH;
-                manualControl = true;
-            } else if (status == "OFF") {
-                relay1ManualState = LOW;
-                manualControl = true;
-            } else if (status == "AUTO") {
-                manualControl = false;
-            }
-            // Debugging
-            Serial.print("Status Relay 1: "); Serial.println(status);
-        } else if (command.startsWith("R2:")) {
-            String status = command.substring(3);
-            status.trim(); // Membersihkan string status
-            if (status == "ON") {
-                relay2ManualState = HIGH;
-                manualControl = true;
-            } else if (status == "OFF") {
-                relay2ManualState = LOW;
-                manualControl = true;
-            } else if (status == "AUTO") {
-                manualControl = false;
-            }
-            // Debugging
-            Serial.print("Status Relay 2: "); Serial.println(status);
-        }
+    if (command.startsWith("R1:")) {
+      String status = command.substring(3);
+      status.trim();
+      if (status == "ON") {
+        relay1ManualState = HIGH;
+        manualControl = true;
+      } else if (status == "OFF") {
+        relay1ManualState = LOW;
+        manualControl = true;
+      } else if (status == "AUTO") {
+        manualControl = false;
+      }
+      Serial.print("Status Relay 1: "); Serial.println(status);
+    } else if (command.startsWith("R2:")) {
+      String status = command.substring(3);
+      status.trim();
+      if (status == "ON") {
+        relay2ManualState = HIGH;
+        manualControl = true;
+      } else if (status == "OFF") {
+        relay2ManualState = LOW;
+        manualControl = true;
+      } else if (status == "AUTO") {
+        manualControl = false;
+      }
+      Serial.print("Status Relay 2: "); Serial.println(status);
+    } else if (command.startsWith("R3:")) {
+      String status = command.substring(3);
+      status.trim();
+      if (status == "ON") {
+        relay3ManualState = HIGH;
+      } else if (status == "OFF") {
+        relay3ManualState = LOW;
+      }
+      Serial.print("Status Relay 3: "); Serial.println(status);
     }
+  }
 }
 
-
 void controlRelays() {
-    if (manualControl) {
-        // Kontrol manual
-        digitalWrite(RELAY1_PIN, relay1ManualState);
-        digitalWrite(RELAY2_PIN, relay2ManualState);
-        // Debugging
-        Serial.print("Kontrol Manual: Relay 1 = "); Serial.println(relay1ManualState);
-        Serial.print("Kontrol Manual: Relay 2 = "); Serial.println(relay2ManualState);
-    } else {
-        // Kontrol otomatis
+	
+	digitalWrite(RELAY3_PIN, relay3ManualState);
+	Serial.print("Kontrol Manual: Relay 3 = "); Serial.println(relay3ManualState);
+	
+  if (manualControl) {
+    digitalWrite(RELAY1_PIN, relay1ManualState);
+    digitalWrite(RELAY2_PIN, relay2ManualState);
+    
+    Serial.print("Kontrol Manual: Relay 1 = "); Serial.println(relay1ManualState);
+    Serial.print("Kontrol Manual: Relay 2 = "); Serial.println(relay2ManualState);
+    
+  } else {
+    // Add your automatic control logic here
+	 // Kontrol otomatis
         float temp1 = thermocouple1.readCelsius();
         float temp2 = thermocouple2.readCelsius();
         float temp3 = thermocouple3.readCelsius();
@@ -206,14 +216,12 @@ void controlRelays() {
             Serial.print("Auto1:"); Serial.println(RELAY1_PIN);
             Serial.print("Auto2:"); Serial.println(RELAY2_PIN);
         }
-    }
+      
+  }
 }
 
-
-
 void loop() {
-    readSensorData();
-    checkForSerialCommands();
-    Serial.print("manualcontrolnya=");Serial.println(manualControl);
-    controlRelays();
+  readSensorData();
+  checkForSerialCommands();
+  controlRelays();
 }
