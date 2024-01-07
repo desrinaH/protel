@@ -12,16 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
         dateDisplay.textContent = formatDate(currentDate);
     }
 
-    // Define the nodeButtons and rangeButtons variable at the top scope
-    const nodeButtons = document.querySelectorAll('.node-button');
-    const rangeButtons = document.querySelectorAll('.range-button');
+        // Define the nodeButtons and rangeButtons variable at the top scope
+        const nodeButtons = document.querySelectorAll('.node-button');
+        const rangeButtons = document.querySelectorAll('.range-button');
 
-
-    // Initialize Highcharts chart
+           // Initialize Highcharts chart
     const chart = Highcharts.chart('container', {
         chart: {
             type: 'line',
-
         },
         title: {
             text: 'Real-time Temperature Data'
@@ -55,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000); // Set to fetch every second
     }
 
-
 // Function to fetch data and update chart
 function updateChartData(nodeId, range) {
     const apiEndpoint = `http://192.168.156.150:3000/sensorsread/${range}/${nodeId}`;
@@ -78,11 +75,10 @@ function updateChartData(nodeId, range) {
 }
 
 
-
     // Add event listeners for node buttons
     nodeButtons.forEach(button => {
         button.addEventListener('click', function() {
-            // Toggle button active state
+             // Toggle button active state
             nodeButtons.forEach(btn => {
                 btn.classList.remove('bg-[#0067B2]', 'text-white');
                 btn.classList.add('text-[#0067B2]', 'bg-white');
@@ -97,6 +93,7 @@ function updateChartData(nodeId, range) {
         });
     });
 
+    // Add event listeners for range filter buttons
 // Add event listeners for range filter buttons
 rangeButtons.forEach(button => {
     button.addEventListener('click', function() {
@@ -111,7 +108,6 @@ rangeButtons.forEach(button => {
         startDataFetch(nodeId, range);
     });
 });
-
 
 
     // Start the data fetch for the default node and range when the page loads
