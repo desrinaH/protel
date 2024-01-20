@@ -2,10 +2,10 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h> 
 
-const char* ssid = "Xiaomi 12 Lite";        // Ganti dengan SSID WiFi Anda
-const char* password = "dbd201fe2552"; // Ganti dengan Password WiFi Anda
+const char* ssid = "ssid wifi";        
+const char* password = "pass"; 
 const char* serverUrl = "http://192.168.156.150:3000/readings";
-const char* serverActuator1Url = "http://192.168.156.150:3000/actions/1"; // Endpoint untuk mengambil perintah dari database
+const char* serverActuator1Url = "http://192.168.156.150:3000/actions/1";
 const char* serverActuator2Url = "http://192.168.156.150:3000/actions/2";
 const char* serverActuator3Url = "http://192.168.156.150:3000/actions/3";
 
@@ -22,7 +22,7 @@ void connectToWiFi() {
 }
 
 void sendCommandToArduino(const String &command) {
-  Serial.println(command); // Make sure it ends with a newline character
+  Serial.println(command); 
 }
 
 void fetchActuatorCommand(const char* serverActuatorUrl, const String& relayIdentifier) {
@@ -35,9 +35,9 @@ void fetchActuatorCommand(const char* serverActuatorUrl, const String& relayIden
             String responseBody = http.getString();
             DynamicJsonDocument doc(1024);
             deserializeJson(doc, responseBody);
-            const char* status = doc["status"]; // Asumsi ada field "status" di JSON
+            const char* status = doc["status"]; 
 
-            // Kirim status dengan identifikasi relay ke Arduino
+            
             Serial.print(relayIdentifier);
             Serial.println(status);
         } else {
@@ -56,11 +56,11 @@ void sendToServer(const String& suhuData) {
         http.begin(serverUrl);
         http.addHeader("Content-Type", "application/json");
 
-        // Mengirim data ke server dalam format JSON
+        
         DynamicJsonDocument doc(1024);
         JsonArray suhuArray = doc.createNestedArray("suhu");
 
-        // Pisahkan data suhu yang diterima dan tambahkan ke JSON
+        
         int start = 0;
         int end = suhuData.indexOf(',');
         int suhuIndex = 1;
@@ -71,7 +71,7 @@ void sendToServer(const String& suhuData) {
             end = suhuData.indexOf(',', start);
             suhuIndex++;
         }
-        // Tambahkan suhu terakhir
+        
         doc["suhu" + String(suhuIndex)] = suhuData.substring(start).toFloat();
 
         String payload;
@@ -141,7 +141,7 @@ void setup() {
 }
 
 void loop() {
-    // Melakukan polling untuk perintah aktuator dari server
+   
     fetchActuatorCommand(serverActuator1Url, "R1:");
     fetchActuatorCommand(serverActuator2Url, "R2:");
     fetchActuatorCommand(serverActuator3Url, "R3:");
@@ -150,12 +150,12 @@ void loop() {
         // Membaca data dari Arduino
         String receivedData = Serial.readStringUntil('\n');
         if (receivedData.startsWith("TEMP:")) {
-            String suhuData = receivedData.substring(5); // Hapus "TEMP:"
+            String suhuData = receivedData.substring(5); // hapus "TEMP:"
             sendToServer(suhuData);
         }
     }
 
     readFromArduino();
 
-    //delay(5000); // Memberi jeda antara polling ke server dan pengiriman data
+    //delay(5000); 
 }
