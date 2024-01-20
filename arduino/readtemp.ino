@@ -1,10 +1,10 @@
 #include "max6675.h"
 
-// Pin untuk komunikasi SPI dengan MAX6675
+
 #define CLK_PIN 13
 #define SO_PIN 12
 
-// Pin CS untuk setiap sensor
+
 #define CS_PIN1 2
 #define CS_PIN2 3
 #define CS_PIN3 4
@@ -19,24 +19,24 @@ MAX6675 thermocouple4(CLK_PIN, CS_PIN4, SO_PIN);
 MAX6675 thermocouple5(CLK_PIN, CS_PIN5, SO_PIN);
 MAX6675 thermocouple6(CLK_PIN, CS_PIN6, SO_PIN);
 
-// Pin untuk relay
+
 #define RELAY1_PIN 10
 #define RELAY2_PIN 8
 #define RELAY3_PIN 9
 
-// Variabel global untuk pembacaan sensor
+
 unsigned long lastReadTime = 0;
 const long readInterval = 1000;
 int sensorIndex = 1;
 
-// Variabel global untuk kontrol relay
+
 bool isHeatingAll = false;
 unsigned long lastRelayToggle = 0;
 const int toggleInterval = 3000;
 
 float suhu[6];
 
-// Variabel untuk kontrol manual
+
 bool manualControl = false;
 bool relay1ManualState = LOW;
 bool relay2ManualState = LOW;
@@ -158,8 +158,8 @@ void controlRelays() {
     Serial.print("Kontrol Manual: Relay 2 = "); Serial.println(relay2ManualState);
     
   } else {
-    // Add your automatic control logic here
-	 // Kontrol otomatis
+    
+	 // kontrol auto
         float temp1 = thermocouple1.readCelsius();
         float temp2 = thermocouple2.readCelsius();
         float temp3 = thermocouple3.readCelsius();
@@ -174,7 +174,7 @@ void controlRelays() {
         bool flag2 = (avg2 < 50); //kalibrasi ini 
 
         if (flag1 && flag2) {
-            // Jika kedua grup sensor rendah, pilih salah satu relay untuk diaktifkan
+            // kalo dua sensor suhu rendah, actuator nyala gantian
             unsigned long currentMillis = millis();
             if (currentMillis - lastRelayChange >= relayChangeInterval) {
                 if (lastRelayToggled == RELAY1_PIN) {
@@ -195,23 +195,23 @@ void controlRelays() {
             }
         }
         else if (flag1) {
-            digitalWrite(RELAY1_PIN, HIGH); // Nyalakan relay 1
-            digitalWrite(RELAY2_PIN, LOW);  // Matikan relay 2
+            digitalWrite(RELAY1_PIN, HIGH); 
+            digitalWrite(RELAY2_PIN, LOW); 
             lastRelayToggled = RELAY1_PIN;
             Serial.println("Sensor 1-3 Rendah");
             Serial.print("Auto1:"); Serial.println(RELAY1_PIN);
             Serial.print("Auto2:"); Serial.println(RELAY2_PIN);
 
         } else if (flag2) {
-            digitalWrite(RELAY1_PIN, LOW);  // Matikan relay 1
-            digitalWrite(RELAY2_PIN, HIGH); // Nyalakan relay 2
+            digitalWrite(RELAY1_PIN, LOW);  
+            digitalWrite(RELAY2_PIN, HIGH); 
             lastRelayToggled = RELAY2_PIN;
             Serial.println("Sensor 4-6 Rendah");
             Serial.print("Auto1:"); Serial.println(RELAY1_PIN);
             Serial.print("Auto2:"); Serial.println(RELAY2_PIN);
         } else {
-            digitalWrite(RELAY1_PIN, LOW); // Matikan relay 1
-            digitalWrite(RELAY2_PIN, LOW); // Matikan relay 2
+            digitalWrite(RELAY1_PIN, LOW); 
+            digitalWrite(RELAY2_PIN, LOW); 
             Serial.println("Semua Sensor Tinggi");
             Serial.print("Auto1:"); Serial.println(RELAY1_PIN);
             Serial.print("Auto2:"); Serial.println(RELAY2_PIN);
