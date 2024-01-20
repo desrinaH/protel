@@ -1,22 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Function to format date to "dd MMMM yyyy"
+    
     function formatDate(date) {
         const options = { day: 'numeric', month: 'long', year: 'numeric' };
         return new Intl.DateTimeFormat('id-ID', options).format(date);
     }
 
-    // Update the date display
+    
     const dateDisplay = document.getElementById('date-display');
     if (dateDisplay) {
         const currentDate = new Date();
         dateDisplay.textContent = formatDate(currentDate);
     }
 
-    // Define the nodeButtons and rangeButtons variable at the top scope
+    
     const nodeButtons = document.querySelectorAll('.node-button');
     const rangeButtons = document.querySelectorAll('.range-button');
 
-    // Initialize Highcharts chart
+
     const chart = Highcharts.chart('container', {
         chart: {
             type: 'line',
@@ -41,19 +41,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }]
     });
 
-    let dataFetchInterval; // To keep track of the interval
+    let dataFetchInterval; 
 
-    // Function to start fetching data every second
+    
     function startDataFetch(nodeId, range) {
         if (dataFetchInterval) {
-            clearInterval(dataFetchInterval); // Clear the existing interval
+            clearInterval(dataFetchInterval); 
         }
         dataFetchInterval = setInterval(() => {
             updateChartData(nodeId, range);
-        }, 1000); // Set to fetch every second
+        }, 1000); 
     }
 
-// Function to fetch data and update chart
+
 function updateChartData(nodeId, range) {
     const apiEndpoint = `http://192.168.156.150:3000/sensorsread/${range}/${nodeId}`;
     fetch(apiEndpoint)
@@ -64,7 +64,7 @@ function updateChartData(nodeId, range) {
             return response.json(); // This parses the JSON of the response
         })
         .then(data => {
-            const timezoneOffset = 25200000; // Offset for WIB in milliseconds (7 hours)
+            const timezoneOffset = 25200000; 
             const processedData = data.map(item => {
                 // Add the timezone offset here
                 return [new Date(item.timestamp).getTime() + timezoneOffset, item.avg_temp];
@@ -75,10 +75,10 @@ function updateChartData(nodeId, range) {
 }
 
 
-    // Add event listeners for node buttons
+    
     nodeButtons.forEach(button => {
         button.addEventListener('click', function() {
-            // Toggle button active state
+            
             nodeButtons.forEach(btn => {
                 btn.classList.remove('bg-[#0067B2]', 'text-white');
                 btn.classList.add('text-[#0067B2]', 'bg-white');
@@ -93,13 +93,13 @@ function updateChartData(nodeId, range) {
         });
     });
 
-    // Add event listeners for range filter buttons
-// Add event listeners for range filter buttons
+    
+
 rangeButtons.forEach(button => {
     button.addEventListener('click', function() {
-        // Remove active class from all buttons
+        
         rangeButtons.forEach(btn => btn.classList.remove('active'));
-        // Add active class to the clicked button
+        
         this.classList.add('active');
 
         const activeNodeButton = document.querySelector('.node-button.bg-[#0067B2]');
@@ -110,8 +110,8 @@ rangeButtons.forEach(button => {
 });
 
 
-    // Start the data fetch for the default node and range when the page loads
+    
     const defaultNodeId = nodeButtons.length > 0 ? nodeButtons[0].getAttribute('data-node-id') : 'defaultNodeId';
-    const defaultRange = 'tensecond'; // Replace with the default range if necessary
+    const defaultRange = 'tensecond'; 
     startDataFetch(defaultNodeId, defaultRange);
 });
