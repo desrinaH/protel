@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function updateChartData(nodeId, range) {
-    const apiEndpoint = `http://192.168.156.150:3000/sensorsread/${range}/${nodeId}`;
+    const apiEndpoint = `http://192.168.43.6:3000/sensorsread/${range}/${nodeId}`;
     fetch(apiEndpoint)
         .then(response => {
             if (!response.ok) {
