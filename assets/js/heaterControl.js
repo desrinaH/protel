@@ -1,6 +1,6 @@
 
 function updateHeaterStatus(nodeId, status) {
-    fetch(`http://192.168.156.150:3000/actions/${nodeId}`, {
+    fetch(`http://192.168.43.6:3000/actions/${nodeId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -58,7 +58,7 @@ function setupHeaterControls() {
 
 function checkAndSetAutoHeaterStatus(nodeId) {
  
-    fetch(`http://192.168.156.150:3000/actions/auto/${nodeId}`) 
+    fetch(`http://192.168.43.6:3000/actions/auto/${nodeId}`) 
         .then(response => response.json())
         .then(data => {
            
